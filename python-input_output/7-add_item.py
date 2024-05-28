@@ -1,20 +1,18 @@
 #!/usr/bin/python3
-"""Module for saving to json"""
-import json
-import os.path
-import sys
+""" module writes an object to a text file,
+using a JSON representation """
+
+
 from sys import argv
+save_to_json_file = __import__('5-save_to_json_file').save_to_json_file
+load_from_json_file = __import__('6-load_from_json_file').load_from_json_file
 
-save_to_json_file = __import__('7-save_to_json_file').save_to_json_file
-load_from_json_file = __import__('8-load_from_json_file').load_from_json_file
 
-filename = "add_item.json"
-json_list = []
-
-if os.path.exists(filename):
-    json_list = load_from_json_file(filename)
-
-for index in argv[1:]:
-    json_list.append(index)
-
-save_to_json_file(json_list, filename)
+NewList = []
+try:
+    NewList = load_from_json_file("add_item.json")
+except FileNotFoundError:
+    NewList = []
+for args in argv[1:]:
+    NewList.append(args)
+save_to_json_file(NewList, "add_item.json")

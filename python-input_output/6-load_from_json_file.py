@@ -1,9 +1,11 @@
 #!/usr/bin/python3
-
+""" create an object from json file """
 
 import json
 
 
 def load_from_json_file(filename):
-    with open(filename, "r", encoding="UTF-8") as f:
-        return json.load(f)
+    """ creates an object """
+    with open(filename) as file:
+        object = json.load(file)
+        return object
