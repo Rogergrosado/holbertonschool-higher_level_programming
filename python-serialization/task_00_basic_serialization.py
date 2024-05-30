@@ -6,17 +6,13 @@ def serialize_and_save_to_file(data, filename):
 
     Parameters:
     data (dict): The data to be serialized.
-    filename (str): The name of the file to save the serialized data to. If the file exists, it will be replaced.
+    filename (str): The name of the file to save the serialized data to.
 
     Returns:
     None
     """
-    try:
-        with open(filename, 'w') as file:
-            json.dump(data, file)
-        print(f"Data serialized and saved to '{filename}'.")
-    except (IOError, TypeError) as e:
-        print(f"Error saving data to file: {e}")
+    with open(filename, 'w') as file:
+        json.dump(data, file)
 
 def load_and_deserialize(filename):
     """
@@ -28,31 +24,5 @@ def load_and_deserialize(filename):
     Returns:
     dict: The deserialized data.
     """
-    try:
-        with open(filename, 'r', encoding='utf-8') as file:
-            data = json.load(file)
-            print(f"Data deserialized from '{filename}'.")
-            return data
-    except (IOError, json.JSONDecodeError) as e:
-        print(f"Error loading data from file: {e}")
-        return None
-
-# Example usage
-if __name__ == "__main__":
-    # Sample data to be serialized
-    data_to_serialize = {
-        "name": "John Doe",
-        "age": 30,
-        "city": "New York"
-    }
-
-    # Serialize the data to JSON and save it to a file
-    serialize_and_save_to_file(data_to_serialize, 'data.json')
-
-    # Load and deserialize data from 'data.json'
-    deserialized_data = load_and_deserialize('data.json')
-
-    # Output the deserialized data
-    print("Deserialized Data:")
-    print(deserialized_data)
-
+    with open(filename, 'r', encoding='utf-8') as file:
+        return json.load(file)
