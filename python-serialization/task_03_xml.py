@@ -1,6 +1,5 @@
 import xml.etree.ElementTree as ET
 
-
 def serialize_to_xml(dictionary, filename):
     """
     Serialize a dictionary to an XML file.
@@ -29,12 +28,14 @@ def serialize_to_xml(dictionary, filename):
                 add_items(element, value)
             else:
                 element.text = str(value)
-
-    root = ET.Element("data")
-    add_items(root, dictionary)
-    tree = ET.ElementTree(root)
-    tree.write(filename)
-
+    
+    try:
+        root = ET.Element("data")
+        add_items(root, dictionary)
+        tree = ET.ElementTree(root)
+        tree.write(filename)
+    except Exception as e:
+        print(f"Error during XML serialization: {e}")
 
 def deserialize_from_xml(filename):
     """
@@ -63,11 +64,14 @@ def deserialize_from_xml(filename):
             else:
                 parsed_dict[child.tag] = child.text
         return parsed_dict
-
-    tree = ET.parse(filename)
-    root = tree.getroot()
-    return parse_element(root)
-
+    
+    try:
+        tree = ET.parse(filename)
+        root = tree.getroot()
+        return parse_element(root)
+    except Exception as e:
+        print(f"Error during XML deserialization: {e}")
+        return None
 
 # Example usage
 if __name__ == "__main__":
@@ -86,3 +90,4 @@ if __name__ == "__main__":
     # Deserialize from XML
     deserialized_data = deserialize_from_xml('data.xml')
     print(deserialized_data)
+
