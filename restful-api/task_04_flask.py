@@ -1,45 +1,70 @@
-from flask import Flask, jsonify, request
+#!/usr/bin/python3
+""" Nameless Module for Task 4 """
 
+from flask import Flask, jsonify, request, abort
+
+# Step 1
 app = Flask(__name__)
 
-# Almacenamiento de usuarios en memoria
 users = {}
 
-# Ruta principal
+
 @app.route("/")
 def home():
+    """ Prints welcome string """
     return "Welcome to the Flask API!"
 
-# Ruta para devolver los nombres de usuario
+
 @app.route("/data")
-def get_usernames():
+def data():
+    """ Returns JSON data """
     return jsonify(list(users.keys()))
 
-# Ruta para verificar el estado
+
 @app.route("/status")
 def status():
+    """ Prints OK """
     return "OK"
 
-# Ruta para obtener detalles de un usuario
+
 @app.route("/users/<username>")
-def get_user(username):
-    user = users.get(username)
-    if user:
-        return jsonify(user)
-    else:
+def users_specific(username):
+    """ Get specified """
+    if username not in users:
         return jsonify({"error": "User not found"}), 404
 
-# Ruta para agregar un nuevo usuario
+    output = users[username]
+    output["username"] = username
+
+    return jsonify(output)
+
+
 @app.route("/add_user", methods=["POST"])
 def add_user():
-    new_user = request.json
-    username = new_user.get("username")
-    if not username:
-        return jsonify({"error": "Username is required"}), 400
-    if username in users:
-        return jsonify({"error": "User already exists"}), 400
-    users[username] = new_user
-    return jsonify({"message": "User added", "user": new_user}), 201
+    """ adds a new user to the dict """
+    if request.get_json() is None:
+        abort(400, "Not a JSON")
 
+    req_data = request.get_json()
+
+    if "username" not in req_data:
+        return jsonify({"error": "Username is required"}), 400
+
+    users[req_data["username"]] = {
+        "name": req_data["name"],
+        "age": req_data["age"],
+        "city": req_data["city"]
+    }
+
+    output = {
+        "username": req_data["username"],
+        "name": req_data["name"],
+        "age": req_data["age"],
+        "city": req_data["city"]
+    }
+    return jsonify({"message": "User added", "user": output}), 201
+
+
+# Set debug=True for the server to auto-reload when there are changes
 if __name__ == "__main__":
-    app.run()
+    app.run(host='localhost', port=5000, debug=True)
